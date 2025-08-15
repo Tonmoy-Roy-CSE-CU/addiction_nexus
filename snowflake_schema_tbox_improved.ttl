@@ -1,0 +1,318 @@
+@prefix an: <https://zenodo.org/records/16881403#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix qb: <http://purl.org/linked-data/cube#> .
+@prefix qb4o: <http://purl.org/qb4olap/cubes#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+an:MH_Dataset a qb:DataSet,
+        owl:Class ;
+    qb:structure an:MH_Cuboid .
+
+an:dim_Country a qb:DimensionProperty,
+        owl:Class ;
+    rdfs:label "Country Dimension (covers ['Continent', 'Country'])" .
+
+an:dim_Gender a qb:DimensionProperty,
+        owl:Class ;
+    rdfs:label "Gender Dimension (covers [])" .
+
+an:dim_MentalHealth a qb:DimensionProperty,
+        owl:Class ;
+    rdfs:label "MentalHealth Dimension (covers ['Condition', 'Severity', 'ConsultationHistory', 'Stress', 'Medication'])" .
+
+an:dim_Occupation a qb:DimensionProperty,
+        owl:Class ;
+    rdfs:label "Occupation Dimension (covers [])" .
+
+an:hier_Lifestyle a qb4o:Hierarchy,
+        owl:Class ;
+    rdfs:label "Lifestyle Hierarchy" ;
+    qb4o:hasLevel an:lev_Lifestyle_Alcohol,
+        an:lev_Lifestyle_Diet,
+        an:lev_Lifestyle_Smoking ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:step_Country_Country_to_Continent a qb4o:HierarchyStep ;
+    qb4o:childLevel an:lev_Country_Continent ;
+    qb4o:inHierarchy an:hier_Country ;
+    qb4o:parentLevel an:lev_Country_Country ;
+    qb4o:pcCardinality qb4o:OneToMany ;
+    qb4o:rollup an:inContinent .
+
+an:step_MentalHealth_Condition_to_Severity a qb4o:HierarchyStep ;
+    qb4o:childLevel an:lev_MentalHealth_Severity ;
+    qb4o:inHierarchy an:hier_MentalHealth ;
+    qb4o:parentLevel an:lev_MentalHealth_Condition ;
+    qb4o:pcCardinality qb4o:OneToMany ;
+    qb4o:rollup an:inSeverity .
+
+an:MH_Cuboid a qb:DataStructureDefinition,
+        owl:Class ;
+    dcterms:conformsTo an:Ontology ;
+    qb:component [ qb4o:cardinality qb4o:OneToMany ;
+            qb4o:level an:lev_MentalHealth_ConsultationHistory ],
+        [ qb:measure an:meas_Sleep_Hours ;
+            qb4o:aggregateFunction qb4o:avg,
+                qb4o:count,
+                qb4o:sum ],
+        [ qb4o:cardinality qb4o:OneToMany ;
+            qb4o:level an:lev_Lifestyle_Alcohol ],
+        [ qb4o:cardinality qb4o:OneToMany ;
+            qb4o:level an:lev_MentalHealth_Condition ],
+        [ qb4o:cardinality qb4o:OneToMany ;
+            qb4o:level an:lev_Country_Country ],
+        [ qb4o:cardinality qb4o:OneToMany ;
+            qb4o:level an:lev_MentalHealth_Medication ],
+        [ qb4o:cardinality qb4o:OneToMany ;
+            qb4o:level an:lev_MentalHealth_Stress ],
+        [ qb:measure an:meas_Age ;
+            qb4o:aggregateFunction qb4o:avg,
+                qb4o:count,
+                qb4o:sum ],
+        [ qb:measure an:meas_Social_Media_Usage ;
+            qb4o:aggregateFunction qb4o:avg,
+                qb4o:count,
+                qb4o:sum ],
+        [ qb4o:cardinality qb4o:OneToMany ;
+            qb4o:level an:lev_Lifestyle_Smoking ],
+        [ qb4o:cardinality qb4o:OneToMany ;
+            qb4o:level an:lev_Country_Continent ],
+        [ qb:measure an:meas_Physical_Activity_Hours ;
+            qb4o:aggregateFunction qb4o:avg,
+                qb4o:count,
+                qb4o:sum ],
+        [ qb4o:cardinality qb4o:OneToMany ;
+            qb4o:level an:lev_Lifestyle_Diet ],
+        [ qb:measure an:meas_Work_Hours ;
+            qb4o:aggregateFunction qb4o:avg,
+                qb4o:count,
+                qb4o:sum ],
+        [ qb4o:cardinality qb4o:OneToMany ;
+            qb4o:level an:lev_MentalHealth_Severity ] .
+
+an:Ontology a owl:Ontology ;
+    dcterms:created "2025-08-15"^^xsd:date ;
+    dcterms:creator "University of Chittagong" ;
+    dcterms:description "A multidimensional behavioral, neurophysiological and socioeconomic determinants of addiction cartography plays a vital role in addiction research. This study combines OLAP analytics with knowledge graph technology to provide structured insights into dependency patterns using a comprehensive dataset of 50,000 mental health and lifestyle records. While earlier research has explored semantic modeling and OLAP techniques, many studies have inadequately addressed FAIR compliance validation, limiting interoperability and accessibility." ;
+    dcterms:identifier "ArticleID-1419" ;
+    dcterms:license "CC BY 4.0" ;
+    dcterms:relation "https://zenodo.org/records/16881403" ;
+    dcterms:title "Addiction Nexus: A Multidimensional Cartography of Behavioral, Neurophysiological, and Socioeconomic Determinants of Dependency Using OLAP and Knowledge Graphs" ;
+    rdfs:seeAlso "Ahmad et al. (2023)",
+        "Chaudhuri & Dayal (1997)",
+        "Chen et al. (2024)",
+        "Etcheverry & Vaisman (2012)",
+        "Johnson & Brown (2024)",
+        "Rodriguez et al. (2023)",
+        "Smith et al. (2023)",
+        "Wilkinson et al. (2016)",
+        "Williams et al. (2022)" .
+
+an:attr_Country_Continent_label a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:DatatypeProperty ;
+    rdfs:label "Label for Country:Continent" ;
+    rdfs:domain an:lev_Country_Continent ;
+    rdfs:range xsd:string .
+
+an:attr_Country_Country_label a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:DatatypeProperty ;
+    rdfs:label "Label for Country:Country" ;
+    rdfs:domain an:lev_Country_Country ;
+    rdfs:range xsd:string .
+
+an:attr_Lifestyle_Alcohol_label a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:DatatypeProperty ;
+    rdfs:label "Label for Lifestyle:Alcohol" ;
+    rdfs:domain an:lev_Lifestyle_Alcohol ;
+    rdfs:range xsd:string .
+
+an:attr_Lifestyle_Diet_label a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:DatatypeProperty ;
+    rdfs:label "Label for Lifestyle:Diet" ;
+    rdfs:domain an:lev_Lifestyle_Diet ;
+    rdfs:range xsd:string .
+
+an:attr_Lifestyle_Smoking_label a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:DatatypeProperty ;
+    rdfs:label "Label for Lifestyle:Smoking" ;
+    rdfs:domain an:lev_Lifestyle_Smoking ;
+    rdfs:range xsd:string .
+
+an:attr_MentalHealth_Condition_label a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:DatatypeProperty ;
+    rdfs:label "Label for MentalHealth:Condition" ;
+    rdfs:domain an:lev_MentalHealth_Condition ;
+    rdfs:range xsd:string .
+
+an:attr_MentalHealth_ConsultationHistory_label a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:DatatypeProperty ;
+    rdfs:label "Label for MentalHealth:ConsultationHistory" ;
+    rdfs:domain an:lev_MentalHealth_ConsultationHistory ;
+    rdfs:range xsd:string .
+
+an:attr_MentalHealth_Medication_label a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:DatatypeProperty ;
+    rdfs:label "Label for MentalHealth:Medication" ;
+    rdfs:domain an:lev_MentalHealth_Medication ;
+    rdfs:range xsd:string .
+
+an:attr_MentalHealth_Severity_label a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:DatatypeProperty ;
+    rdfs:label "Label for MentalHealth:Severity" ;
+    rdfs:domain an:lev_MentalHealth_Severity ;
+    rdfs:range xsd:string .
+
+an:attr_MentalHealth_Stress_label a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:DatatypeProperty ;
+    rdfs:label "Label for MentalHealth:Stress" ;
+    rdfs:domain an:lev_MentalHealth_Stress ;
+    rdfs:range xsd:string .
+
+an:hier_Country a qb4o:Hierarchy,
+        owl:Class ;
+    rdfs:label "Country Hierarchy" ;
+    qb4o:hasLevel an:lev_Country_Continent,
+        an:lev_Country_Country ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:hier_MentalHealth a qb4o:Hierarchy,
+        owl:Class ;
+    rdfs:label "MentalHealth Hierarchy" ;
+    qb4o:hasLevel an:lev_MentalHealth_Condition,
+        an:lev_MentalHealth_ConsultationHistory,
+        an:lev_MentalHealth_Medication,
+        an:lev_MentalHealth_Severity,
+        an:lev_MentalHealth_Stress ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:meas_Age a qb:MeasureProperty,
+        rdf:Property ;
+    rdfs:label "Age Measure" ;
+    qb4o:aggregateFunction qb4o:avg,
+        qb4o:count,
+        qb4o:sum ;
+    rdfs:range xsd:float .
+
+an:meas_Physical_Activity_Hours a qb:MeasureProperty,
+        rdf:Property ;
+    rdfs:label "Physical_Activity_Hours Measure" ;
+    qb4o:aggregateFunction qb4o:avg,
+        qb4o:count,
+        qb4o:sum ;
+    rdfs:range xsd:float .
+
+an:meas_Sleep_Hours a qb:MeasureProperty,
+        rdf:Property ;
+    rdfs:label "Sleep_Hours Measure" ;
+    qb4o:aggregateFunction qb4o:avg,
+        qb4o:count,
+        qb4o:sum ;
+    rdfs:range xsd:float .
+
+an:meas_Social_Media_Usage a qb:MeasureProperty,
+        rdf:Property ;
+    rdfs:label "Social_Media_Usage Measure" ;
+    qb4o:aggregateFunction qb4o:avg,
+        qb4o:count,
+        qb4o:sum ;
+    rdfs:range xsd:float .
+
+an:meas_Work_Hours a qb:MeasureProperty,
+        rdf:Property ;
+    rdfs:label "Work_Hours Measure" ;
+    qb4o:aggregateFunction qb4o:avg,
+        qb4o:count,
+        qb4o:sum ;
+    rdfs:range xsd:float .
+
+an:inContinent a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:ObjectProperty ;
+    rdfs:domain an:lev_Country_Continent ;
+    rdfs:range an:lev_Country_Country .
+
+an:inSeverity a qb4o:LevelAttribute,
+        rdf:Property,
+        owl:ObjectProperty ;
+    rdfs:domain an:lev_MentalHealth_Severity ;
+    rdfs:range an:lev_MentalHealth_Condition .
+
+an:lev_Lifestyle_Alcohol a qb4o:LevelProperty,
+        owl:Class ;
+    rdfs:label "Lifestyle:Alcohol Level" ;
+    qb4o:hasAttribute an:attr_Lifestyle_Alcohol_label ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:lev_Lifestyle_Diet a qb4o:LevelProperty,
+        owl:Class ;
+    rdfs:label "Lifestyle:Diet Level" ;
+    qb4o:hasAttribute an:attr_Lifestyle_Diet_label ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:lev_Lifestyle_Smoking a qb4o:LevelProperty,
+        owl:Class ;
+    rdfs:label "Lifestyle:Smoking Level" ;
+    qb4o:hasAttribute an:attr_Lifestyle_Smoking_label ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:lev_MentalHealth_ConsultationHistory a qb4o:LevelProperty,
+        owl:Class ;
+    rdfs:label "MentalHealth:ConsultationHistory Level" ;
+    qb4o:hasAttribute an:attr_MentalHealth_ConsultationHistory_label ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:lev_MentalHealth_Medication a qb4o:LevelProperty,
+        owl:Class ;
+    rdfs:label "MentalHealth:Medication Level" ;
+    qb4o:hasAttribute an:attr_MentalHealth_Medication_label ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:lev_MentalHealth_Stress a qb4o:LevelProperty,
+        owl:Class ;
+    rdfs:label "MentalHealth:Stress Level" ;
+    qb4o:hasAttribute an:attr_MentalHealth_Stress_label ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:lev_Country_Continent a qb4o:LevelProperty,
+        owl:Class ;
+    rdfs:label "Country:Continent Level" ;
+    qb4o:hasAttribute an:attr_Country_Continent_label ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:lev_Country_Country a qb4o:LevelProperty,
+        owl:Class ;
+    rdfs:label "Country:Country Level" ;
+    qb4o:hasAttribute an:attr_Country_Country_label,
+        an:inContinent ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:lev_MentalHealth_Condition a qb4o:LevelProperty,
+        owl:Class ;
+    rdfs:label "MentalHealth:Condition Level" ;
+    qb4o:hasAttribute an:attr_MentalHealth_Condition_label,
+        an:inSeverity ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:lev_MentalHealth_Severity a qb4o:LevelProperty,
+        owl:Class ;
+    rdfs:label "MentalHealth:Severity Level" ;
+    qb4o:hasAttribute an:attr_MentalHealth_Severity_label ;
+    qb4o:inDimension an:dim_Lifestyle .
+
+an:dim_Lifestyle a qb:DimensionProperty,
+        owl:Class ;
+    rdfs:label "Lifestyle Dimension (covers ['Diet', 'Smoking', 'Alcohol'])" .
+
